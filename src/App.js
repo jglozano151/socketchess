@@ -13,7 +13,7 @@ import GamePage from './components/gamepage';
 export default class App extends Component {
   state = {authenticated: Auth.isUserAuthenticated()}
   registerUser = (username, password) => {
-    fetch('/register', {
+    fetch('https://cors-anywhere.herokuapp.com/https://chess-backend151.herokuapp.com/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -24,9 +24,9 @@ export default class App extends Component {
       .then(/* Make a snackbar appear to show the registration was successful*/)
   }
   loginUser = (username, password) => {
-    fetch('/login', {
+    fetch('https://cors-anywhere.herokuapp.com/https://chess-backend151.herokuapp.com/login', {
       method: 'POST',
-      headers: {
+      headers: { 
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({username, password})

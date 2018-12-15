@@ -19,12 +19,40 @@ export const checkKingStatus = (color, board) => {
         checkDown(self, opponent, board, king), 
         checkDownLeft(self, opponent, board, king), 
         checkLeft(self, opponent, board, king), 
-        checkUpLeft(self, opponent, board, king)
+        checkUpLeft(self, opponent, board, king),
+        checkKnightThreat(self, opponent, board, king), 
+        checkPawnThreat(self, opponent, board, king)
     ]
     for (let i = 0; i < directions.length; i ++) { 
         if (directions[i]) return true;
     }
     return false; 
+}
+
+const checkPawnThreat = (self, opponent, board, king) => { 
+    let row = king[0]; 
+    let col = king[1]; 
+    if (self === 'w') { 
+        if (board[row - 1] && board[row - 1][col - 1] && board[row - 1][col - 1][0] === opponent && board[row - 1][col - 1][1] === 'P') return true; 
+        if (board[row - 1] && board[row - 1][col + 1] && board[row - 1][col + 1][0] === opponent && board[row - 1][col + 1][1] === 'P') return true; 
+    }
+    else {
+        if (board[row + 1] && board[row + 1][col - 1] && board[row + 1][col - 1][0] === opponent && board[row + 1][col - 1][1] === 'P') return true; 
+        if (board[row + 1] && board[row + 1][col + 1] && board[row + 1][col + 1][0] === opponent && board[row + 1][col + 1][1] === 'P') return true; 
+    }
+}
+
+const checkKnightThreat = (self, opponent, board, king) => { 
+    let row = king[0]; 
+    let col = king[1]; 
+    if (board[row - 2] && board[row - 2][col + 1] && board[row - 2][col + 1][0] === opponent && board[row - 2][col + 1][1] === 'N') return true; 
+    if (board[row - 2] && board[row - 2][col - 1] && board[row - 2][col - 1][0] === opponent && board[row - 2][col - 1][1] === 'N') return true; 
+    if (board[row - 1] && board[row - 1][col + 2] && board[row - 1][col + 2][0] === opponent && board[row - 1][col + 2][1] === 'N') return true; 
+    if (board[row + 1] && board[row + 1][col + 2] && board[row + 1][col + 2][0] === opponent && board[row + 1][col + 2][1] === 'N') return true; 
+    if (board[row + 2] && board[row + 2][col + 1] && board[row + 2][col + 1][0] === opponent && board[row + 2][col + 1][1] === 'N') return true; 
+    if (board[row + 2] && board[row + 2][col - 1] && board[row + 2][col - 1][0] === opponent && board[row + 2][col - 1][1] === 'N') return true; 
+    if (board[row - 1] && board[row - 1][col - 2] && board[row - 1][col - 2][0] === opponent && board[row - 1][col - 2][1] === 'N') return true; 
+    if (board[row + 1] && board[row + 1][col - 2] && board[row + 1][col - 2][0] === opponent && board[row + 1][col - 2][1] === 'N') return true; 
 }
 
 //------------------------------------------------------------------------------

@@ -41,7 +41,7 @@ export default class Board extends Component {
     winner: null,
     players: [],
     createdAt: null,
-    socket: io.connect('/'),
+    socket: io.connect('https://chess-backend151.herokuapp.com/'),
     selection: [null, null],
     legalMoves: [],
     inCheck: null, 
@@ -55,9 +55,10 @@ export default class Board extends Component {
   }
   componentDidMount() {
     this.state.socket.on('connect', () => {
-      console.log('connected'); 
+      this.state.socket.on('endGame', (data) => { 
+        this.setState({winner: data.game.winner}); 
+      })
       this.state.socket.on('updateBoard', (data) => {
-        console.log('here');
         this.setState({
           winner: data.game.winner,
           turn: data.game.turn,
@@ -157,8 +158,8 @@ export default class Board extends Component {
         }
         else {
           this.state.turn === 'White' ?
-            takenPieces.white.push(board[row][col]) :
-            takenPieces.black.push(board[row][col]);
+            takenPieces.white.push(piece) :
+            takenPieces.black.push(piece);
           let checkOpponent = checkKingStatus(this.state.turn === 'White' ? 'Black' : 'White', board); 
           let inCheck = null; 
           if (checkOpponent) this.state.turn === 'White' ? inCheck = 'Black' : inCheck = 'White'; 
@@ -187,10 +188,7 @@ export default class Board extends Component {
     return false
   }
   concedeGame = () => { 
-    let winner = null; 
-    console.log(this.state.turn); 
-    this.state.turn === 'White' ? winner = 'Black' : winner = 'White'; 
-    this.setState({winner}); 
+    this.state.socket.emit('winGame', {winner: this.state.turn === 'White' ? 'Black' : 'White', id: this.state.id});
   }
   render() {
     return (
@@ -200,7 +198,6 @@ export default class Board extends Component {
           autoHideDuration = {6000} onClose = {this.hideCheckWarning} message = {
           this.state.inCheck ? <span> Your King is in Check! </span> : <span> This move would put your king in check! </span> }/> 
         <div style = {{display: 'flex', flexDirection: 'column'}}>
-          <Typography variant = "h3"> {this.state.inCheck ? 'CHECK': ''} </Typography>  
           {this.state.board.map((row, index) => (
             <div style = {{display: 'flex', flexDirection: 'row'}}>
               {row.map((square, index2) => (
@@ -217,6 +214,7 @@ export default class Board extends Component {
             {this.state.winner ? <Typography variant = "title"> Winner: {this.state.winner} </Typography> :
               <Typography variant = "subheading"> Turn: {this.state.turn} </Typography>
             }
+            {this.state.inCheck ? <Typography variant = "subheading"> CHECK </Typography> : <div/>}
           </Paper> 
           <div style = {{maxWidth: 125,
             minHeight: 100, backgroundColor: '#ededed', display: 'flex',

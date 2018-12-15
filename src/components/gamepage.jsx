@@ -38,7 +38,7 @@ export default class GamePage extends Component {
     invitee: null,
   }
   componentWillMount() {
-    fetch('/getuser/' + Auth.getToken())
+    fetch('https://cors-anywhere.herokuapp.com/https://chess-backend151.herokuapp.com/getuser/' + Auth.getToken())
       .then((user) => user.json())
       .then((user) => {
         this.setState({games: user.games, username: user.username})
@@ -48,7 +48,7 @@ export default class GamePage extends Component {
     this.setState({invitee: e.target.value})
   }
   newGame = () => {
-    fetch(`/newgame/${this.state.invitee}&${Auth.getToken()}`)
+    fetch(`https://cors-anywhere.herokuapp.com/https://chess-backend151.herokuapp.com/newgame/${this.state.invitee}&${Auth.getToken()}`)
       .then((response) => response.json())
       .then((response) => {
         if (response.valid) window.location.reload()
@@ -68,12 +68,13 @@ export default class GamePage extends Component {
           open = {this.state.snack} autoHideDuration = {4000} onClose = {this.closeSnack}
           message = {<span> Can't find a username "{this.state.invitee}" </span>}/>
         <div style = {{flex: 1, padding: 25}}>
-          <Typography variant = "title" style = {{marginBottom: 25, textAlign: 'center', fontFamily: 'Segoe UI'}}> Welcome: {this.state.username} </Typography>
-          <Typography variant = "h6" style = {{marginBottom: 25}}> Challenge a Friend! </Typography>
-          <Input placeholder = "Username" style = {{padding: 10, marginRight: 25}} onChange = {(e) => this.changeInvitee(e)}/>
-          <Button style = {{backgroundColor: '#232323'}} onClick = {() => this.newGame()}>
-            <Typography variant = "subheading" style = {{color: '#ededed'}}> New Game </Typography>
-          </Button>
+          <Paper style = {{padding: 15}}> 
+            <Typography variant = "h6" style = {{marginBottom: 25, textAlign: 'center', fontFamily: 'Segoe UI'}}> Welcome {this.state.username}, Challenge a Friend! </Typography>
+            <Input placeholder = "Username" style = {{padding: 10, marginRight: 25}} onChange = {(e) => this.changeInvitee(e)}/>
+            <Button style = {{backgroundColor: '#232323'}} onClick = {() => this.newGame()}>
+              <Typography variant = "subheading" style = {{color: '#ededed'}}> New Game </Typography>
+            </Button>
+          </Paper> 
           <div style = {{marginTop: 25}}>
             {this.state.games.length === 0 ? <Typography variant = "h6"> <i> No Games, Start a Game! </i> </Typography> :
               this.state.games.map((game) => (
@@ -101,7 +102,7 @@ class Game extends Component {
   }
   componentWillMount() {
     console.log(this.props.game)
-    fetch('/game/' + this.props.game)
+    fetch('https://cors-anywhere.herokuapp.com/https://chess-backend151.herokuapp.com/game/' + this.props.game)
       .then((res) => res.json())
       .then((res) => {
         this.setState({game: res.game})
